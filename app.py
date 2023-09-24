@@ -17,7 +17,6 @@ def upload_csv():
         # Читаем CSV-файл с помощью Pandas
         df = pd.read_csv(file)
         
-        # Сохраняем данные в словаре, используя имя файла в качестве ключа
         data[file.filename] = df
         
         return jsonify({'message': 'CSV file uploaded successfully'})
@@ -32,20 +31,16 @@ def get_data(filename):
     if filename in data:
         df = data[filename]
         
-        # Обработка параметров для фильтрации и сортировки
         filter_column = request.args.get('filter_column')
         filter_value = request.args.get('filter_value')
         sort_by = request.args.getlist('sort_by')
         
-        # Пример фильтрации
         if filter_column and filter_value:
             df = df[df[filter_column] == filter_value]
         
-        # Пример сортировки
         if sort_by:
             df = df.sort_values(by=sort_by)
         
-        # Преобразование DataFrame в JSON
         result = df.to_dict(orient='records')
         
         return jsonify(result)
@@ -55,7 +50,6 @@ def get_data(filename):
 @app.route('/delete/<filename>', methods=['DELETE'])
 def delete_file(filename):
     if filename in data:
-        # Удаляем файл из данных
         del data[filename]
         return jsonify({'message': f'File {filename} deleted successfully'})
     else:
